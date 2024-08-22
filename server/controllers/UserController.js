@@ -1,6 +1,10 @@
 import UserModel from "../models/UserModel.js";
 import bcryptjs from "bcryptjs"
+import jwt from "jsonwebtoken"
 import { uploadOnCloudinary, deleteImageFromCloudinary } from "../utils/cloudinary.js"
+import dotenv from "dotenv"
+
+dotenv.config()
 
 async function registerUser(req, res) {
     const { name, username, password, gender } = req.body;
@@ -56,6 +60,85 @@ async function registerUser(req, res) {
             .json({ msg: "Error while register user", error, success: false });
     }
 }
-async function loginUser(req, res) { }
+async function loginUser(req, res) {
+    const { username, password } = req.body;
+    try {
+        if (!username || !password) {
+            return res
+                .status(400)
+                .json({ msg: "Not all credentials are provided!", success: false });
+        }
+        const existingUser = await UserModel.findOne({ username });
+        if (!existingUser) {
+            return res
+                .status(400)
+                .json({ msg: "User doesn't exist, Register now", success: false });
+        }
+        const isPassword = await bcryptjs.compare(password, existingUser.password)
+        if (!isPassword) {
+            return res
+                .status(400)
+                .json({ msg: "Incorrect password", success: false });
+        }
 
-export { registerUser, loginUser };
+        const token = jwt.sign({
+            id: existingUser._id,
+            username: existingUser.username,
+            name: existingUser.name
+        }, process.env.JWT_SECRET, { expiresIn: '1h' })
+
+        res.cookie("token", token, {
+            httpOnly: true,
+            maxAge: 60 * 1000,
+            sameSite: 'Strict'
+        })
+        const userObj = {
+            name: existingUser.name,
+            username: existingUser.username,
+            gender: existingUser.gender,
+            image: existingUser.image,
+            _id: existingUser._id
+        }
+        return res.status(200).json({ msg: "Login successfull", success: true, user: userObj })
+    } catch (error) {
+        console.error("Error while login user", error);
+        return res
+            .status(500)
+            .json({ msg: "Error while login user", error, success: false });
+    }
+}
+
+async function searchUser(req, res) {
+    const { search } = req.params
+    const excludeUserId = req.id
+    try {
+        if (!search) {
+            return res
+                .status(400)
+                .json({ msg: "Username is required!", success: false });
+        }
+
+        const regexPattern = new RegExp(`^${search}`, 'i');
+        const users = await UserModel.find({
+            username: { $regex: regexPattern },
+            _id: { $ne: excludeUserId }
+        }).select('-password');
+
+        if (users.length === 0) {
+            return res
+                .status(404)
+                .json({ msg: "No users found", success: false });
+        }
+        return res
+            .status(200)
+            .json({ msg: "Users found", success: true, users });
+
+    } catch (error) {
+        console.error("Error while fetching user by username", error);
+        return res
+            .status(500)
+            .json({ msg: "Error while fetching user", error, success: false });
+    }
+}
+
+export { registerUser, loginUser, searchUser };
