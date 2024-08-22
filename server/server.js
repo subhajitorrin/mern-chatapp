@@ -1,6 +1,8 @@
 import express from "express"
 import mongoose from "mongoose"
 import dotenv from "dotenv"
+import cookieParser from "cookie-parser"
+import UserRoutes from "./routes/UserRoutes.js"
 
 const app = express()
 dotenv.config()
@@ -8,9 +10,10 @@ dotenv.config()
 const PORT = process.env.PORT
 const MONGO_URI = process.env.MONGO_URI
 
-app.get("/", (req, res) => {
-    res.send("Welcome to chatapp")
-})
+app.use(express.json())
+app.use(cookieParser());
+
+app.use("/",UserRoutes)
 
 mongoose.connect(MONGO_URI).then(() => {
     app.listen(PORT, () => {
