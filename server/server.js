@@ -1,6 +1,7 @@
 import express from "express"
 import mongoose from "mongoose"
 import dotenv from "dotenv"
+import cors from "cors"
 import cookieParser from "cookie-parser"
 import UserRoutes from "./routes/UserRoutes.js"
 import MessageRoutes from "./routes/MessageRoutes.js"
@@ -11,11 +12,14 @@ dotenv.config()
 const PORT = process.env.PORT
 const MONGO_URI = process.env.MONGO_URI
 
+app.use(cors({
+    origin: "*"
+}))
 app.use(express.json())
 app.use(cookieParser());
 
-app.use("/",UserRoutes)
-app.use("/",MessageRoutes)
+app.use("/", UserRoutes)
+app.use("/", MessageRoutes)
 
 mongoose.connect(MONGO_URI).then(() => {
     app.listen(PORT, () => {
