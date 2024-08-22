@@ -141,4 +141,55 @@ async function searchUser(req, res) {
     }
 }
 
-export { registerUser, loginUser, searchUser };
+async function updateUser(req, res) {
+    const userid = req.id
+    const { name, username } = req.body;
+    const file = req.file
+    try {
+        if (!name && !username && !file) {
+            return res
+                .status(400)
+                .json({ msg: "Nothing to update!", success: false });
+        }
+        const existingUser = await UserModel.findById(userid)
+        if (!existingUser) {
+            return res
+                .status(400)
+                .json({ msg: "User not found!", success: false });
+        }
+        const thingsToUpdate = {}
+        if (name) thingsToUpdate.name = name;
+        if (username) thingsToUpdate.username = username;
+        if (file) {
+            const cloudinaryBaseUrl = "http://res.cloudinary.com/";
+            if (existingUser.image.startsWith(cloudinaryBaseUrl)) {
+                await deleteImageFromCloudinary(existingUser.image);
+            }
+            const cloudinary_response = await uploadOnCloudinary(file.path, "profile_pictures");
+            if (!cloudinary_response) {
+                return res.status(400).json({ msg: "File not uploaded on cloud", success: false });
+            }
+            thingsToUpdate.image = cloudinary_response.url;
+        }
+
+        const updatedUser = await UserModel.findByIdAndUpdate(userid, thingsToUpdate, { new: true })
+
+        const userObj = {
+            name: updatedUser.name,
+            username: updatedUser.username,
+            gender: updatedUser.gender,
+            image: updatedUser.image,
+            _id: updatedUser._id
+        }
+
+        return res.status(200).json({ msg: "User updated successfully", success: true, user: userObj });
+
+    } catch (error) {
+        console.error("Error while updating user", error);
+        return res
+            .status(500)
+            .json({ msg: "Error while updating user", error, success: false });
+    }
+}
+
+export { registerUser, loginUser, searchUser, updateUser };
