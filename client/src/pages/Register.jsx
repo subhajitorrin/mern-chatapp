@@ -40,7 +40,7 @@ function Register() {
         toast("Username already exist");
       }
     } catch (error) {
-      console.log("Error while register user", error);
+      console.error("Error while register user", error);
     }
   };
 

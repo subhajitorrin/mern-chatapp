@@ -1,16 +1,36 @@
 import React, { useState } from "react";
 import toast from "../utils/toast.js";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 function Login() {
   const navigate = useNavigate();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (username == "" || password == "") {
       toast("Fill all the fields");
       return;
+    }
+    try {
+      const response = await axios.post(
+        `${import.meta.env.VITE_BACKEND_BASE_URL}/login`,
+        { username, password },
+        { withCredentials: true }
+      );
+      if (response.status === 202) {
+        toast("User doesn't exist!");
+      }
+      if (response.status === 203) {
+        toast("Incorrect password!");
+      }
+      if (response.status === 200) {
+        toast("Login successfull");
+        navigate("/");
+      }
+    } catch (error) {
+      console.error("Error while loggin user", error);
     }
   };
 

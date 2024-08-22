@@ -13,7 +13,8 @@ const PORT = process.env.PORT
 const MONGO_URI = process.env.MONGO_URI
 
 app.use(cors({
-    origin: "*"
+    origin: process.env.CLIENT_URL,
+    credentials: true
 }))
 app.use(express.json())
 app.use(cookieParser());

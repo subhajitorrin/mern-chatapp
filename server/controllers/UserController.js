@@ -71,13 +71,13 @@ async function loginUser(req, res) {
         const existingUser = await UserModel.findOne({ username });
         if (!existingUser) {
             return res
-                .status(400)
+                .status(202)
                 .json({ msg: "User doesn't exist, Register now", success: false });
         }
         const isPassword = await bcryptjs.compare(password, existingUser.password)
         if (!isPassword) {
             return res
-                .status(400)
+                .status(203)
                 .json({ msg: "Incorrect password", success: false });
         }
 
