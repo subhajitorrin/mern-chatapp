@@ -6,5 +6,5 @@ const UserRoutes = express.Router()
 UserRoutes.post("/register", uploadStorage.single("image"), registerUser)
 UserRoutes.post("/login", loginUser)
 UserRoutes.get("/searchuser/:search", authToken, searchUser)
-UserRoutes.put("/updateuser", uploadStorage.single("image"), authToken, updateUser)
+UserRoutes.put("/updateuser", authToken, uploadStorage.single("image"), updateUser)
 export default UserRoutes
