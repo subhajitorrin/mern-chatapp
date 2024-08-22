@@ -192,4 +192,22 @@ async function updateUser(req, res) {
     }
 }
 
-export { registerUser, loginUser, searchUser, updateUser };
+async function logoutUser(req, res) {
+    try {
+        // Clear the token cookie
+        res.clearCookie("token", {
+            httpOnly: true,
+            sameSite: 'Strict'
+        });
+
+        return res.status(200).json({ msg: "Logout successful", success: true });
+    } catch (error) {
+        console.error("Error while logging out user", error);
+        return res
+            .status(500)
+            .json({ msg: "Error while logging out user", error, success: false });
+    }
+}
+
+
+export { registerUser, loginUser, searchUser, updateUser, logoutUser };

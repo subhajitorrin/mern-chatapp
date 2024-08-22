@@ -46,7 +46,27 @@ async function sendMessage(req, res) {
     }
 }
 async function receiveMessage(req, res) {
+    const { senderid } = req.params
+    const receiverid = req.id
+    try {
 
+        if (senderid == receiverid) {
+            return res.status(404).json({ error: 'Cannot send msg to yourself!' });
+        }
+
+        const sender = await UserModel.findById(senderid);
+        if (!sender) {
+            return res.status(404).json({ error: 'Sender not found' });
+        }
+
+        let conversation = await ConversationModel.findOne({
+            participants: { $all: [senderid, receiverid] }
+        }).populate("messages");
+        return res.status(200).json({ messages: conversation, success: true });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: 'errow while receiving message' });
+    }
 }
 
 export { sendMessage, receiveMessage }
