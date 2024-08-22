@@ -1,6 +1,10 @@
 import React, { useState } from "react";
+import toast from "../utils/toast.js";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 function Register() {
+  const navigate = useNavigate();
   const [profilePhoto, setProfilePhoto] = useState(null);
   const [name, setName] = useState("");
   const [username, setUsername] = useState("");
@@ -9,17 +13,35 @@ function Register() {
 
   const handlePhotoUpload = (e) => {
     const file = e.target.files[0];
-    setProfilePhoto(URL.createObjectURL(file));
+    setProfilePhoto(file);
   };
 
-  const handleSubmit = () => {
-    console.log({
-      name,
-      username,
-      password,
-      gender,
-      profilePhoto
-    });
+  const handleSubmit = async () => {
+    if (!name || !username || !password || !gender) {
+      toast("Fill all the fields!");
+      return;
+    }
+    const formData = new FormData();
+    formData.append("name", name);
+    formData.append("username", username);
+    formData.append("password", password);
+    formData.append("gender", gender);
+    formData.append("image", profilePhoto);
+    try {
+      const response = await axios.post(
+        `${import.meta.env.VITE_BACKEND_BASE_URL}/register`,
+        formData
+      );
+      if (response.status === 201) {
+        toast("Register successfull");
+        navigate("/login");
+      }
+      if (response.status === 202) {
+        toast("Username already exist");
+      }
+    } catch (error) {
+      console.log("Error while register user", error);
+    }
   };
 
   return (
@@ -106,6 +128,18 @@ function Register() {
         >
           Register
         </button>
+
+        <p className="text-center mt-[10px]">
+          Already have an account ?{" "}
+          <span
+            className="cursor-pointer font-[500]"
+            onClick={() => {
+              navigate("/login");
+            }}
+          >
+            Login
+          </span>
+        </p>
       </div>
     </div>
   );

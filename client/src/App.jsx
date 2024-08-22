@@ -6,28 +6,32 @@ import Home from "./pages/Home";
 import Register from "./pages/Register";
 import NotFound from "./pages/NotFound";
 import { useSelector } from "react-redux";
+import ToastifyContainer from "./components/ToastifyContainer";
 
 function App() {
   const width = useSelector((state) => state.screenWidth.width);
   return (
-    <div
-      className={`h-screen w-full mainContainer ${
-        width > 768 ? "px-[5%] py-[3%]" : ""
-      }`}
-    >
+    <>
       <div
-        className={`bg-[#00000041]  h-full w-full rounded-md bg-clip-padding backdrop-filter backdrop-blur-lg bg-opacity-[0] border  ${
-          width > 768 ? "border-[#ffffff73]" : "border-none p-[1rem]"
+        className={`h-screen w-full mainContainer ${
+          width > 768 ? "px-[5%] py-[3%]" : ""
         }`}
       >
-        <Routes>
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/" element={<Home />} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
+        <div
+          className={`bg-[#00000041]  h-full w-full rounded-md bg-clip-padding backdrop-filter backdrop-blur-lg bg-opacity-[0] border  ${
+            width > 768 ? "border-[#ffffff73]" : "border-none p-[1rem]"
+          }`}
+        >
+          <Routes>
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/" element={<Home />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </div>
       </div>
-    </div>
+      <ToastifyContainer />
+    </>
   );
 }
 

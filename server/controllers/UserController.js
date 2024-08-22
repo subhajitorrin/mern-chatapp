@@ -18,7 +18,7 @@ async function registerUser(req, res) {
         const existingUser = await UserModel.findOne({ username });
         if (existingUser) {
             return res
-                .status(400)
+                .status(202)
                 .json({ msg: "User already exist, Login now", success: false });
         }
         let finalImage = file;
