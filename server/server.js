@@ -3,6 +3,7 @@ import mongoose from "mongoose"
 import dotenv from "dotenv"
 import cookieParser from "cookie-parser"
 import UserRoutes from "./routes/UserRoutes.js"
+import MessageRoutes from "./routes/MessageRoutes.js"
 
 const app = express()
 dotenv.config()
@@ -14,6 +15,7 @@ app.use(express.json())
 app.use(cookieParser());
 
 app.use("/",UserRoutes)
+app.use("/",MessageRoutes)
 
 mongoose.connect(MONGO_URI).then(() => {
     app.listen(PORT, () => {
