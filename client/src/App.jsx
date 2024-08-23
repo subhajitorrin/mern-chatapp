@@ -4,10 +4,10 @@ import { Routes, Route } from "react-router-dom";
 import Login from "./pages/Login";
 import Home from "./pages/Home";
 import Register from "./pages/Register";
-import { useSelector } from "react-redux";
 import ToastifyContainer from "./components/ToastifyContainer";
 import { Navigate } from "react-router-dom";
 import { useAuthStore } from "./store/AuthStore";
+import { useMediaQuery } from "react-responsive";
 
 function ProtectedRoute({ children }) {
   const { isAuthenticated } = useAuthStore();
@@ -25,8 +25,9 @@ function RedirectAuthedUser({ children }) {
 }
 
 function App() {
-  const width = useSelector((state) => state.screenWidth.width);
-
+  const isMobile = useMediaQuery({
+    query: "(max-width: 768px)"
+  });
   const { isCheckingAuth, getUser } = useAuthStore();
 
   useEffect(() => {
@@ -39,12 +40,12 @@ function App() {
     <>
       <div
         className={`h-screen w-full select-none mainContainer ${
-          width > 768 ? "px-[2%] py-[1%]" : ""
+          !isMobile ? "px-[2%] py-[1%]" : ""
         }`}
       >
         <div
           className={`bg-[#00000041]  h-full w-full rounded-md bg-clip-padding backdrop-filter backdrop-blur-lg bg-opacity-[0] border  ${
-            width > 768 ? "border-[#ffffff73]" : "border-none p-[1rem]"
+            !isMobile ? "border-[#ffffff73]" : "border-none p-[1rem]"
           }`}
         >
           <Routes>
