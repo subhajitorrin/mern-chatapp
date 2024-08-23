@@ -17,7 +17,7 @@ function ProfileCard() {
     }
   }
   return (
-    <div className="px-[1rem] border-b border-[#ffffff73] flex justify-between items-center py-[1rem]">
+    <div className="h-[12%] px-[1rem] border-b border-[#ffffff73] flex justify-between items-center py-[1rem]">
       <div className="flex gap-[10px] items-center">
         <img
           src=""

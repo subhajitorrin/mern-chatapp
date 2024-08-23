@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import toast from "../utils/toast.js";
 import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "../store/AuthStore.js";
+import { BeatLoader } from "react-spinners";
 
 function Login() {
   const navigate = useNavigate();
@@ -53,10 +54,15 @@ function Login() {
           </div>
 
           <button
+            style={{ pointerEvents: isLoading ? "none" : "auto" }}
             onClick={handleSubmit}
             className="w-full bg-[#ffffff1f] text-white py-2 rounded-lg hover:bg-[#ffffff4d] transition duration-300"
           >
-            Login
+            {isLoading ? (
+              <BeatLoader color="#ffffff" size={7} />
+            ) : (
+              <span>Login</span>
+            )}
           </button>
           <p className="text-center mt-[10px]">
             Don't have an account ?{" "}

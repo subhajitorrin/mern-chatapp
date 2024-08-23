@@ -39,7 +39,7 @@ function App() {
     <>
       <div
         className={`h-screen w-full mainContainer ${
-          width > 768 ? "px-[5%] py-[3%]" : ""
+          width > 768 ? "px-[2%] py-[1%]" : ""
         }`}
       >
         <div

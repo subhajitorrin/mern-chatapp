@@ -3,7 +3,7 @@ import UserCard from "./UserCard";
 
 function OtherUsers() {
   return (
-    <div className="scrollNone flex flex-col h-[82%] overflow-y-auto">
+    <div className="scrollNone flex flex-col h-[80%] overflow-y-auto">
       <UserCard />
       <UserCard />
       <UserCard />
