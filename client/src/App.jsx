@@ -8,36 +8,10 @@ import { useSelector } from "react-redux";
 import ToastifyContainer from "./components/ToastifyContainer";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { Navigate } from "react-router-dom";
-import Cookies from "js-cookie";
-import axios from "axios";
 
 function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(null);
-  const [refetch, setRefetch] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const width = useSelector((state) => state.screenWidth.width);
-
-  useEffect(() => {
-    async function authToken() {
-      const token = Cookies.get("token");
-      if (!token) {
-        return setIsLoggedIn(false);
-      }
-      try {
-        const response = await axios.get(
-          `${import.meta.env.VITE_BACKEND_BASE_URL}/getuser`,
-          { withCredentials: true }
-        );
-        if (response.status === 200) {
-          setIsLoggedIn(true);
-          console.log(response.data);
-        }
-      } catch (error) {
-        console.log(error);
-        setIsLoggedIn(false);
-      }
-    }
-    authToken();
-  }, [refetch]);
 
   if (isLoggedIn === null) return <></>;
 
@@ -56,10 +30,7 @@ function App() {
           <Routes>
             {!isLoggedIn == true && (
               <>
-                <Route
-                  path="/login"
-                  element={<Login setRefetch={setRefetch} />}
-                />
+                <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
               </>
             )}

@@ -18,7 +18,7 @@ async function registerUser(req, res) {
         const existingUser = await UserModel.findOne({ username });
         if (existingUser) {
             return res
-                .status(202)
+                .status(409)
                 .json({ msg: "User already exist, Login now", success: false });
         }
         let finalImage = file;
@@ -28,7 +28,7 @@ async function registerUser(req, res) {
                 : "https://avatar.iran.liara.run/public/girl";
         } else {
             const cloudinary_response = await uploadOnCloudinary(finalImage.path, "profile_pictures")
-            if (!cloudinary_response) return res.status(400).json({ msg: "File not uploaded on cloud", success: false })
+            if (!cloudinary_response) return res.status(500).json({ msg: "File not uploaded on cloud", success: false })
             finalImage = cloudinary_response.url;
         }
 
@@ -88,7 +88,7 @@ async function loginUser(req, res) {
         }, process.env.JWT_SECRET, { expiresIn: '1h' })
 
         res.cookie("token", token, {
-            // httpOnly: true,
+            httpOnly: true,
             maxAge: 60 * 1000,
             sameSite: 'Strict'
         })
@@ -99,7 +99,7 @@ async function loginUser(req, res) {
             image: existingUser.image,
             _id: existingUser._id
         }
-        return res.status(200).json({ msg: "Login successfull", success: true, user: userObj, token })
+        return res.status(200).json({ msg: "Login successfull", success: true, user: userObj })
     } catch (error) {
         console.error("Error while login user", error);
         return res
@@ -194,12 +194,7 @@ async function updateUser(req, res) {
 
 async function logoutUser(req, res) {
     try {
-        // Clear the token cookie
-        res.clearCookie("token", {
-            httpOnly: true,
-            sameSite: 'Strict'
-        });
-
+        res.clearCookie("token")
         return res.status(200).json({ msg: "Logout successful", success: true });
     } catch (error) {
         console.error("Error while logging out user", error);

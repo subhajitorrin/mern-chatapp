@@ -15,7 +15,7 @@ function UserCard() {
             className="h-[40px] w-[40px] rounded-[100%] border border-white"
           />
         </span>
-        <p>Santanu Dutta</p>
+        <p>Poulomi Routh</p>
       </div>
       <div className="">03:40 PM</div>
     </div>

@@ -9,7 +9,7 @@ function Home() {
       {/* left panel */}
       <div className="h-full border-r border-[#ffffff73] w-[25%]">
         <ProfileCard />
-        <Search/>
+        <Search />
         <OtherUsers />
       </div>
 
