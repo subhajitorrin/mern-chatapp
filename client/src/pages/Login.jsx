@@ -1,12 +1,13 @@
 import React, { useState } from "react";
 import toast from "../utils/toast.js";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import { useAuthStore } from "../store/AuthStore.js";
 
 function Login() {
   const navigate = useNavigate();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const { login, isLoading } = useAuthStore();
 
   const handleSubmit = async () => {
     if (username == "" || password == "") {
@@ -14,9 +15,10 @@ function Login() {
       return;
     }
     try {
-      
+      await login(username, password);
+      navigate("/");
     } catch (error) {
-      console.error("Error while loggin user", error);
+      console.log(error.response.data.msg);
     }
   };
 

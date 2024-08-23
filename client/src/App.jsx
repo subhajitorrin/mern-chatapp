@@ -6,14 +6,34 @@ import Home from "./pages/Home";
 import Register from "./pages/Register";
 import { useSelector } from "react-redux";
 import ToastifyContainer from "./components/ToastifyContainer";
-import ProtectedRoute from "./components/ProtectedRoute";
 import { Navigate } from "react-router-dom";
+import { useAuthStore } from "./store/AuthStore";
+
+function ProtectedRoute({ children }) {
+  const { isAuthenticated } = useAuthStore();
+  if (!isAuthenticated) {
+    return <Navigate to="/login" replace />;
+  }
+  return children;
+}
+function RedirectAuthedUser({ children }) {
+  const { isAuthenticated } = useAuthStore();
+  if (isAuthenticated) {
+    return <Navigate to="/" replace />;
+  }
+  return children;
+}
 
 function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const width = useSelector((state) => state.screenWidth.width);
 
-  if (isLoggedIn === null) return <></>;
+  const { isCheckingAuth, getUser } = useAuthStore();
+
+  useEffect(() => {
+    getUser();
+  }, [getUser]);
+
+  if (isCheckingAuth) return <></>;
 
   return (
     <>
@@ -28,19 +48,31 @@ function App() {
           }`}
         >
           <Routes>
-            {!isLoggedIn == true && (
-              <>
-                <Route path="/login" element={<Login />} />
-                <Route path="/register" element={<Register />} />
-              </>
-            )}
-            4
-            <Route element={<ProtectedRoute isLoggedIn={isLoggedIn} />}>
-              <Route path="/" element={<Home />} />
-              <Route path="*" element={<Navigate to={"/"} />} />
-              <Route path="/login" element={<Navigate to={"/"} />} />
-              <Route path="/register" element={<Navigate to={"/"} />} />
-            </Route>
+            <Route
+              path="/login"
+              element={
+                <RedirectAuthedUser>
+                  <Login />
+                </RedirectAuthedUser>
+              }
+            />
+            <Route
+              path="/register"
+              element={
+                <RedirectAuthedUser>
+                  <Register />
+                </RedirectAuthedUser>
+              }
+            />
+            <Route
+              path="/"
+              element={
+                <ProtectedRoute>
+                  <Home />
+                </ProtectedRoute>
+              }
+            />
+            <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </div>
       </div>
