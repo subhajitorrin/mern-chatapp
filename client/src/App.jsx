@@ -7,9 +7,12 @@ import Register from "./pages/Register";
 import NotFound from "./pages/NotFound";
 import { useSelector } from "react-redux";
 import ToastifyContainer from "./components/ToastifyContainer";
+import ProtectedRoute from "./components/ProtectedRoute";
+import { Navigate } from "react-router-dom";
 
 function App() {
   const width = useSelector((state) => state.screenWidth.width);
+  const isLoggedIn = true;
   return (
     <>
       <div
@@ -23,10 +26,19 @@ function App() {
           }`}
         >
           <Routes>
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/" element={<Home />} />
-            <Route path="*" element={<NotFound />} />
+            {!isLoggedIn && (
+              <>
+                <Route path="/login" element={<Login />} />
+                <Route path="/register" element={<Register />} />
+              </>
+            )}
+
+            <Route element={<ProtectedRoute />}>
+              <Route path="/" element={<Home />} />
+              <Route path="*" element={<Navigate to={"/"} />} />
+              <Route path="/login" element={<Navigate to={"/"} />} />
+              <Route path="/register" element={<Navigate to={"/"} />} />
+            </Route>
           </Routes>
         </div>
       </div>
