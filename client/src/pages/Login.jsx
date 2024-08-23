@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import toast from "../utils/toast.js";
 import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "../store/AuthStore.js";
@@ -22,6 +22,19 @@ function Login() {
       console.log(error.response.data.msg);
     }
   };
+
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      if (event.key === "Enter") {
+        handleSubmit();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [username, password]);
 
   return (
     <>

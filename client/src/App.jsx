@@ -38,7 +38,7 @@ function App() {
   return (
     <>
       <div
-        className={`h-screen w-full mainContainer ${
+        className={`h-screen w-full select-none mainContainer ${
           width > 768 ? "px-[2%] py-[1%]" : ""
         }`}
       >

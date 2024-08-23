@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import toast from "../utils/toast.js";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -37,6 +37,19 @@ function Register() {
       console.log(error.response.data.msg);
     }
   };
+
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      if (event.key === "Enter") {
+        handleSubmit();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, []);
 
   return (
     <div className="h-full w-full flex items-center justify-center text-white">
@@ -78,9 +91,9 @@ function Register() {
           {profilePhoto && (
             <div className="mt-4">
               <img
-                src={profilePhoto}
+                src={URL.createObjectURL(profilePhoto)}
                 alt="Profile Preview"
-                className="w-20 h-20 rounded-full object-cover mx-auto"
+                className="w-[55px] h-[55px] rounded-full object-cover mx-auto"
               />
             </div>
           )}
