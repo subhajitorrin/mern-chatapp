@@ -88,7 +88,7 @@ async function loginUser(req, res) {
         }, process.env.JWT_SECRET, { expiresIn: '1h' })
 
         res.cookie("token", token, {
-            httpOnly: true,
+            // httpOnly: true,
             maxAge: 60 * 1000,
             sameSite: 'Strict'
         })
@@ -99,7 +99,7 @@ async function loginUser(req, res) {
             image: existingUser.image,
             _id: existingUser._id
         }
-        return res.status(200).json({ msg: "Login successfull", success: true, user: userObj })
+        return res.status(200).json({ msg: "Login successfull", success: true, user: userObj, token })
     } catch (error) {
         console.error("Error while login user", error);
         return res
@@ -209,5 +209,21 @@ async function logoutUser(req, res) {
     }
 }
 
+async function getUser(req, res) {
+    const id = req.id;
+    try {
+        const user = await UserModel.findById(id).select('-password');
+        if (!user) {
+            return res.status(400).json({ msg: "User not found!", success: false });
+        }
+        return res.status(200).json({ msg: "User fetched successfully", success: true, user });
+    } catch (error) {
+        console.error("Error while finding user", error);
+        return res
+            .status(500)
+            .json({ msg: "Error while finding user", error, success: false });
+    }
+}
 
-export { registerUser, loginUser, searchUser, updateUser, logoutUser };
+
+export { registerUser, loginUser, searchUser, updateUser, logoutUser, getUser };

@@ -3,7 +3,7 @@ import toast from "../utils/toast.js";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
-function Login() {
+function Login({ setRefetch }) {
   const navigate = useNavigate();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -26,6 +26,7 @@ function Login() {
         toast("Incorrect password!");
       }
       if (response.status === 200) {
+        setRefetch((prev) => !prev);
         toast("Login successfull");
         navigate("/");
       }
