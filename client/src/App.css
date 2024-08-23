@@ -14,3 +14,8 @@ body {
   background-size: cover;
   background-repeat: no-repeat;
 }
+.scrollNone::-webkit-scrollbar {
+  display: none;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
