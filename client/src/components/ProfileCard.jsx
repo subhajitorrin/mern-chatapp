@@ -3,13 +3,15 @@ import React from "react";
 import { CiMenuFries } from "react-icons/ci";
 import { CiLogout } from "react-icons/ci";
 import { useNavigate } from "react-router-dom";
-import toast from "../utils/toast.js";
+import { useAuthStore } from "../store/AuthStore.js";
 
 function ProfileCard() {
+  const { logout } = useAuthStore();
   const navigate = useNavigate();
   async function handleLogout() {
     try {
-      
+      await logout();
+      navigate("/login");
     } catch (error) {
       console.log(error);
     }
