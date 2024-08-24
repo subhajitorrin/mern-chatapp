@@ -118,20 +118,19 @@ async function searchUser(req, res) {
                 .json({ msg: "Username is required!", success: false });
         }
 
-        const regexPattern = new RegExp(`^${search}`, 'i');
-        const users = await UserModel.find({
-            username: { $regex: regexPattern },
+        const user = await UserModel.findOne({
+            username: search,
             _id: { $ne: excludeUserId }
         }).select('-password');
 
-        if (users.length === 0) {
+        if (!user) {
             return res
-                .status(404)
+                .status(203)
                 .json({ msg: "No users found", success: false });
         }
         return res
             .status(200)
-            .json({ msg: "Users found", success: true, users });
+            .json({ msg: "Users found", success: true, user });
 
     } catch (error) {
         console.error("Error while fetching user by username", error);

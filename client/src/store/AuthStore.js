@@ -84,5 +84,16 @@ export const useAuthStore = create((set) => ({
         } finally {
             set({ isLoading: false })
         }
+    },
+    searchUser: async (username) => {
+        set({ isLoading: true })
+        try {
+            const response = await axios.get(`${BASE_URL}/searchuser/${username}`)
+            return response
+        } catch (error) {
+            throw error
+        } finally {
+            set({ isLoading: false })
+        }
     }
 }))

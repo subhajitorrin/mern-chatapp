@@ -16,7 +16,7 @@ function Login() {
       return;
     }
     try {
-      await login(username, password);
+      await login(username.trim(), password.trim());
       navigate("/");
     } catch (error) {
       console.log(error.response.data.msg);
