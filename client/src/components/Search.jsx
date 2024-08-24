@@ -78,7 +78,9 @@ function Search() {
             </p>
           </div>
         )}
-        {findUser === true && <FindUserCard userDetail={userDetail} />}
+        {findUser === true && (
+          <FindUserCard userDetail={userDetail} setuser={setuser} />
+        )}
       </div>
     </>
   );

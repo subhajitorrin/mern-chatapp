@@ -2,7 +2,9 @@ import React, { useEffect, useRef } from "react";
 import ChatLeft from "./ChatLeft";
 import ChatRight from "./ChatRight";
 
+
 function MiddleSection() {
+  
   const conversationRef = useRef(null);
 
   useEffect(() => {

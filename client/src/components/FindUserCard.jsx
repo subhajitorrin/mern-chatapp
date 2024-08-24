@@ -1,6 +1,16 @@
 import React from "react";
+import { ConversationStore } from "../store/ConversationStore.js";
 
-function FindUserCard({ userDetail }) {
+function FindUserCard({ userDetail, setuser }) {
+  const { setPartner } = ConversationStore();
+
+  function handleSetPartner() {
+    if (userDetail) {
+      setPartner(userDetail);
+      setuser("");
+    }
+  }
+
   return (
     <div className="w-full flex justify-between py-[10px] items-center hover:bg-[#ffffff1f] px-[1rem]">
       <div className="flex gap-[10px] items-center">
@@ -13,7 +23,10 @@ function FindUserCard({ userDetail }) {
           <p className="mt-[-6px]">@{userDetail.username}</p>
         </div>
       </div>
-      <button className="text-[13px] bg-[#ffffff1f] text-white h-[30px] rounded-[5px] hover:bg-[#ffffff4d] transition duration-300 px-[1rem]">
+      <button
+        onClick={handleSetPartner}
+        className="text-[13px] bg-[#ffffff1f] text-white h-[30px] rounded-[5px] hover:bg-[#ffffff4d] transition duration-300 px-[1rem]"
+      >
         Add
       </button>
     </div>
