@@ -85,11 +85,11 @@ async function loginUser(req, res) {
             id: existingUser._id,
             username: existingUser.username,
             name: existingUser.name
-        }, process.env.JWT_SECRET, { expiresIn: '1h' })
+        }, process.env.JWT_SECRET, { expiresIn: '30d' })
 
         res.cookie("token", token, {
             httpOnly: true,
-            maxAge: 60 * 1000,
+            maxAge: 5 * 60 * 1000,
             sameSite: 'Strict'
         })
         const userObj = {
@@ -156,6 +156,12 @@ async function updateUser(req, res) {
             return res
                 .status(400)
                 .json({ msg: "User not found!", success: false });
+        }
+        const existingUsername = await UserModel.findOne({ username })
+        if (existingUsername) {
+            return res
+                .status(409)
+                .json({ msg: "Username already exist!", success: false });
         }
         const thingsToUpdate = {}
         if (name) thingsToUpdate.name = name;

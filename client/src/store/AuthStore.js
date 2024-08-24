@@ -46,7 +46,7 @@ export const useAuthStore = create((set) => ({
         try {
             const response = await axios.post(`${BASE_URL}/logout`)
             console.log(response);
-            
+
             if (response.status === 200) {
                 toast("Logout successfull")
             }
@@ -68,6 +68,21 @@ export const useAuthStore = create((set) => ({
             set({ isAuthenticated: false })
         } finally {
             set({ isCheckingAuth: false })
+        }
+    },
+    update: async (formData) => {
+        set({ isLoading: true })
+        try {
+            const response = await axios.put(`${BASE_URL}/updateuser`, formData)
+            if (response.status === 200) {
+                toast("User updated successfully")
+                set({ user: response.data.user })
+            }
+        } catch (error) {
+            error.response ? toast(error.response.data.msg) : console.log(error);
+            throw error
+        } finally {
+            set({ isLoading: false })
         }
     }
 }))

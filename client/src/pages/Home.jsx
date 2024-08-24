@@ -5,7 +5,7 @@ import Search from "../components/Search";
 
 function Home() {
   return (
-    <div className="w-full h-full text-white flex">
+    <div className="w-full h-full text-white flex overflow-hidden ">
       {/* left panel */}
       <div className="h-full border-r border-[#ffffff73] w-[25%]">
         <ProfileCard />
