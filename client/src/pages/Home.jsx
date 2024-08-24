@@ -2,6 +2,7 @@ import React from "react";
 import ProfileCard from "../components/ProfileCard";
 import OtherUsers from "../components/OtherUsers";
 import Search from "../components/Search";
+import Conversation from "../components/Conversation/Conversation";
 
 function Home() {
   return (
@@ -14,7 +15,9 @@ function Home() {
       </div>
 
       {/* right panel */}
-      <div className="h-full w-[75%]"></div>
+      <div className="h-full w-[75%]">
+        <Conversation />
+      </div>
     </div>
   );
 }
