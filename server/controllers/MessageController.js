@@ -62,7 +62,7 @@ async function receiveMessage(req, res) {
         let conversation = await ConversationModel.findOne({
             participants: { $all: [senderid, receiverid] }
         }).populate("messages");
-        return res.status(200).json({ messages: conversation, success: true });
+        return res.status(200).json({ messages: conversation ? conversation : [], success: true });
     } catch (error) {
         console.error(error);
         return res.status(500).json({ error: 'errow while receiving message' });
