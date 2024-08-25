@@ -1,8 +1,10 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { GoDotFill } from "react-icons/go";
 import { ConversationStore } from "../store/ConversationStore.js";
+import { useAuthStore } from "../store/AuthStore.js";
 
-function UserCard({ user,lastMsg }) {
+function UserCard({ user, lastMsg }) {
+  const { activeUsers } = useAuthStore();
   const [isActive, setIsActive] = useState(false);
   const { setPartner } = ConversationStore();
   const { convertTo12HourFormat } = ConversationStore();
@@ -12,6 +14,14 @@ function UserCard({ user,lastMsg }) {
       setPartner(user);
     }
   }
+
+  useEffect(() => {
+    if (activeUsers.includes(user._id)) {
+      setIsActive(true);
+    } else {
+      setIsActive(false);
+    }
+  }, [activeUsers, user._id]);
 
   return (
     <div
