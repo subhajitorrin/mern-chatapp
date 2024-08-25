@@ -25,6 +25,11 @@ function LowerSection() {
         <GrAttachment className="text-[22px] cursor-pointer " />
       </div>
       <input
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.keyCode === 13) {
+            handleSendMessage();
+          }
+        }}
         value={text}
         onChange={(e) => {
           settext(e.target.value);
