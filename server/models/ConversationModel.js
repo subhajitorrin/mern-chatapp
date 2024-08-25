@@ -15,7 +15,7 @@ const ConversationSchema = mongoose.Schema({
             require: true
         }
     ]
-})
+}, { timestamps: true })
 
 const ConversationModel = mongoose.model("Conversation", ConversationSchema)
 

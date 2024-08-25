@@ -32,9 +32,9 @@ function MiddleSection() {
     >
       {messageList.map((msg, index) =>
         msg.sender === user._id ? (
-          <ChatRight key={index} message={msg.message} />
+          <ChatRight key={index} msg={msg} />
         ) : (
-          <ChatLeft key={index} message={msg.message} />
+          <ChatLeft key={index} msg={msg} />
         )
       )}
     </div>
