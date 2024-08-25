@@ -9,7 +9,7 @@ export const ConversationStore = create((set) => ({
     partner: null,
     messages: [],
     setPartner: async (user) => {
-        set({ partner: user })
+        set({ partner: user, messages: [] })
         if (user) {
             try {
                 const response = await axios.get(`${BASE_URL}/receivemessage/${user._id}`)

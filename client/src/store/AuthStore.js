@@ -34,7 +34,7 @@ export const useAuthStore = create((set) => ({
             if (response.status === 200) {
                 toast("Login successfull")
             }
-            set({ user: response.data.user, isAuthenticated: true })
+            set({ user: response.data.user, isAuthenticated: true, connections: [] })
         } catch (error) {
             error.response ? toast(error.response.data.msg) : console.log(error);
             throw error
