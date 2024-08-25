@@ -3,7 +3,7 @@ cd /d "%~dp0"
 
 git add .
 
-git commit -m "Conversation processing"
+git commit -m "Working on conversations..."
 
 git push -u origin main
 

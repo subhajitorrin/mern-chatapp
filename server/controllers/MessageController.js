@@ -26,6 +26,8 @@ async function sendMessage(req, res) {
                 participants: [senderid, receiverid],
                 messages: []
             });
+            await UserModel.findByIdAndUpdate(senderid, { $push: { connections: receiverid } })
+            await UserModel.findByIdAndUpdate(receiverid, { $push: { connections: senderid } })
             await conversation.save();
         }
 

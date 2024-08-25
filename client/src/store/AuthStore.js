@@ -11,6 +11,7 @@ export const useAuthStore = create((set) => ({
     isAuthenticated: false,
     isLoading: false,
     isCheckingAuth: true,
+    connections: [],
     register: async (formData) => {
         set({ isLoading: true })
         try {
@@ -90,6 +91,19 @@ export const useAuthStore = create((set) => ({
         try {
             const response = await axios.get(`${BASE_URL}/searchuser/${username}`)
             return response
+        } catch (error) {
+            throw error
+        } finally {
+            set({ isLoading: false })
+        }
+    },
+    getConnections: async () => {
+        set({ isLoading: true })
+        try {
+            const response = await axios.get(`${BASE_URL}/getconnections`)
+            if (response.status === 200) {
+                set({ connections: response.data.connections })
+            }
         } catch (error) {
             throw error
         } finally {

@@ -21,7 +21,12 @@ const userSchema = new mongoose.Schema({
     gender: {
         type: String,
         enum: ["male", "female"]
-    }
+    },
+    connections: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+        default: []
+    }]
 }, {
     timestamps: true
 });

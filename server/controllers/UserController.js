@@ -1,14 +1,18 @@
 import UserModel from "../models/UserModel.js";
-import bcryptjs from "bcryptjs"
-import jwt from "jsonwebtoken"
-import { uploadOnCloudinary, deleteImageFromCloudinary } from "../utils/cloudinary.js"
-import dotenv from "dotenv"
+import bcryptjs from "bcryptjs";
+import jwt from "jsonwebtoken";
+import {
+    uploadOnCloudinary,
+    deleteImageFromCloudinary
+} from "../utils/cloudinary.js";
+import dotenv from "dotenv";
+import ConversationModel from "../models/ConversationModel.js";
 
-dotenv.config()
+dotenv.config();
 
 async function registerUser(req, res) {
     const { name, username, password, gender } = req.body;
-    const file = req.file
+    const file = req.file;
     try {
         if (!name || !username || !password || !gender) {
             return res
@@ -23,35 +27,46 @@ async function registerUser(req, res) {
         }
         let finalImage = file;
         if (!finalImage) {
-            finalImage = gender.toLowerCase().trim() === "male"
-                ? "https://avatar.iran.liara.run/public/boy"
-                : "https://avatar.iran.liara.run/public/girl";
+            finalImage =
+                gender.toLowerCase().trim() === "male"
+                    ? "https://avatar.iran.liara.run/public/boy"
+                    : "https://avatar.iran.liara.run/public/girl";
         } else {
-            const cloudinary_response = await uploadOnCloudinary(finalImage.path, "profile_pictures")
-            if (!cloudinary_response) return res.status(500).json({ msg: "File not uploaded on cloud", success: false })
+            const cloudinary_response = await uploadOnCloudinary(
+                finalImage.path,
+                "profile_pictures"
+            );
+            if (!cloudinary_response)
+                return res
+                    .status(500)
+                    .json({ msg: "File not uploaded on cloud", success: false });
             finalImage = cloudinary_response.url;
         }
 
-        const hashedPassword = await bcryptjs.hash(password, 10)
+        const hashedPassword = await bcryptjs.hash(password, 10);
         const newUser = new UserModel({
             name,
             username,
             password: hashedPassword,
             image: finalImage,
             gender
-        })
-        const response = await newUser.save()
+        });
+        const response = await newUser.save();
         const userObj = {
             name: response.name,
             username: response.username,
             gender: response.gender,
             image: response.image,
             _id: response._id
-        }
+        };
         if (response) {
             return res
                 .status(201)
-                .json({ msg: "User created successfully", success: true, user: userObj });
+                .json({
+                    msg: "User created successfully",
+                    success: true,
+                    user: userObj
+                });
         }
     } catch (error) {
         console.error("Error while register user", error);
@@ -74,32 +89,38 @@ async function loginUser(req, res) {
                 .status(404)
                 .json({ msg: "User doesn't exist", success: false });
         }
-        const isPassword = await bcryptjs.compare(password, existingUser.password)
+        const isPassword = await bcryptjs.compare(password, existingUser.password);
         if (!isPassword) {
             return res
                 .status(401)
                 .json({ msg: "Incorrect password", success: false });
         }
 
-        const token = jwt.sign({
-            id: existingUser._id,
-            username: existingUser.username,
-            name: existingUser.name
-        }, process.env.JWT_SECRET, { expiresIn: '30d' })
+        const token = jwt.sign(
+            {
+                id: existingUser._id,
+                username: existingUser.username,
+                name: existingUser.name
+            },
+            process.env.JWT_SECRET,
+            { expiresIn: "30d" }
+        );
 
         res.cookie("token", token, {
             httpOnly: true,
             maxAge: 5 * 60 * 1000,
-            sameSite: 'Strict'
-        })
+            sameSite: "Strict"
+        });
         const userObj = {
             name: existingUser.name,
             username: existingUser.username,
             gender: existingUser.gender,
             image: existingUser.image,
             _id: existingUser._id
-        }
-        return res.status(200).json({ msg: "Login successfull", success: true, user: userObj })
+        };
+        return res
+            .status(200)
+            .json({ msg: "Login successfull", success: true, user: userObj });
     } catch (error) {
         console.error("Error while login user", error);
         return res
@@ -109,8 +130,8 @@ async function loginUser(req, res) {
 }
 
 async function searchUser(req, res) {
-    const { search } = req.params
-    const excludeUserId = req.id
+    const { search } = req.params;
+    const excludeUserId = req.id;
     try {
         if (!search) {
             return res
@@ -121,17 +142,12 @@ async function searchUser(req, res) {
         const user = await UserModel.findOne({
             username: search,
             _id: { $ne: excludeUserId }
-        }).select('-password');
+        }).select("-password");
 
         if (!user) {
-            return res
-                .status(203)
-                .json({ msg: "No users found", success: false });
+            return res.status(203).json({ msg: "No users found", success: false });
         }
-        return res
-            .status(200)
-            .json({ msg: "Users found", success: true, user });
-
+        return res.status(200).json({ msg: "Users found", success: true, user });
     } catch (error) {
         console.error("Error while fetching user by username", error);
         return res
@@ -141,28 +157,26 @@ async function searchUser(req, res) {
 }
 
 async function updateUser(req, res) {
-    const userid = req.id
+    const userid = req.id;
     const { name, username } = req.body;
-    const file = req.file
+    const file = req.file;
     try {
         if (!name && !username && !file) {
             return res
                 .status(400)
                 .json({ msg: "Nothing to update!", success: false });
         }
-        const existingUser = await UserModel.findById(userid)
+        const existingUser = await UserModel.findById(userid);
         if (!existingUser) {
-            return res
-                .status(400)
-                .json({ msg: "User not found!", success: false });
+            return res.status(400).json({ msg: "User not found!", success: false });
         }
-        const existingUsername = await UserModel.findOne({ username })
+        const existingUsername = await UserModel.findOne({ username });
         if (existingUsername) {
             return res
                 .status(409)
                 .json({ msg: "Username already exist!", success: false });
         }
-        const thingsToUpdate = {}
+        const thingsToUpdate = {};
         if (name) thingsToUpdate.name = name;
         if (username) thingsToUpdate.username = username;
         if (file) {
@@ -170,14 +184,23 @@ async function updateUser(req, res) {
             if (existingUser.image.startsWith(cloudinaryBaseUrl)) {
                 await deleteImageFromCloudinary(existingUser.image);
             }
-            const cloudinary_response = await uploadOnCloudinary(file.path, "profile_pictures");
+            const cloudinary_response = await uploadOnCloudinary(
+                file.path,
+                "profile_pictures"
+            );
             if (!cloudinary_response) {
-                return res.status(400).json({ msg: "File not uploaded on cloud", success: false });
+                return res
+                    .status(400)
+                    .json({ msg: "File not uploaded on cloud", success: false });
             }
             thingsToUpdate.image = cloudinary_response.url;
         }
 
-        const updatedUser = await UserModel.findByIdAndUpdate(userid, thingsToUpdate, { new: true })
+        const updatedUser = await UserModel.findByIdAndUpdate(
+            userid,
+            thingsToUpdate,
+            { new: true }
+        );
 
         const userObj = {
             name: updatedUser.name,
@@ -185,10 +208,11 @@ async function updateUser(req, res) {
             gender: updatedUser.gender,
             image: updatedUser.image,
             _id: updatedUser._id
-        }
+        };
 
-        return res.status(200).json({ msg: "User updated successfully", success: true, user: userObj });
-
+        return res
+            .status(200)
+            .json({ msg: "User updated successfully", success: true, user: userObj });
     } catch (error) {
         console.error("Error while updating user", error);
         return res
@@ -199,7 +223,7 @@ async function updateUser(req, res) {
 
 async function logoutUser(req, res) {
     try {
-        res.clearCookie("token")
+        res.clearCookie("token");
         return res.status(200).json({ msg: "Logout successful", success: true });
     } catch (error) {
         console.error("Error while logging out user", error);
@@ -212,11 +236,13 @@ async function logoutUser(req, res) {
 async function getUser(req, res) {
     const id = req.id;
     try {
-        const user = await UserModel.findById(id).select('-password');
+        const user = await UserModel.findById(id).select("-password");
         if (!user) {
             return res.status(400).json({ msg: "User not found!", success: false });
         }
-        return res.status(200).json({ msg: "User fetched successfully", success: true, user });
+        return res
+            .status(200)
+            .json({ msg: "User fetched successfully", success: true, user });
     } catch (error) {
         console.error("Error while finding user", error);
         return res
@@ -225,5 +251,29 @@ async function getUser(req, res) {
     }
 }
 
+async function getConnections(req, res) {
+    const user = req.id;
+    try {
+        const connections = await UserModel.findById(user)
+            .select("connections")
+            .populate({ path: "connections", select: "-password -connections" });
+        return res
+            .status(200)
+            .json({ msg: "All connections fetched", success: true, connections: connections.connections });
+    } catch (error) {
+        console.error("Error while finding connections", error);
+        return res
+            .status(500)
+            .json({ msg: "Error while finding connections", error, success: false });
+    }
+}
 
-export { registerUser, loginUser, searchUser, updateUser, logoutUser, getUser };
+export {
+    registerUser,
+    loginUser,
+    searchUser,
+    updateUser,
+    logoutUser,
+    getUser,
+    getConnections
+};

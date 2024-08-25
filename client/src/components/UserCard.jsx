@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { GoDotFill } from "react-icons/go";
 
-function UserCard() {
+function UserCard({ item }) {
   const [isActive, setIsActive] = useState(false);
   return (
     <div className="hover:bg-[#ffffff1e] cursor-pointer px-[1rem] border-b border-[#ffffff24] flex justify-between items-center py-[14px]">
@@ -11,11 +11,11 @@ function UserCard() {
             <GoDotFill className="text-[#00ff00] text-[18px] absolute right-[-3px] top-[-3px]" />
           )}
           <img
-            src=""
-            className="h-[40px] w-[40px] rounded-[100%] border border-white"
+            src={item.image}
+            className="h-[40px] object-cover w-[40px] rounded-[100%]"
           />
         </span>
-        <p>Poulomi Routh</p>
+        <p>{item.name}</p>
       </div>
       <div className="">03:40 PM</div>
     </div>

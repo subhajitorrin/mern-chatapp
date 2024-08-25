@@ -13,9 +13,8 @@ export const ConversationStore = create((set) => ({
         if (user) {
             try {
                 const response = await axios.get(`${BASE_URL}/receivemessage/${user._id}`)
-                console.log(response.data.messages);
                 if (response.status === 200) {
-                    set({ messages: response.data.messages })
+                    set({ messages: response.data.messages.messages })
                 }
             } catch (error) {
                 console.log(error);
