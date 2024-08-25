@@ -5,16 +5,31 @@ import { ConversationStore } from "../../store/ConversationStore.js";
 import { useAuthStore } from "../../store/AuthStore.js";
 
 function TopSection() {
-  const { partner } = ConversationStore();
+  const { partner, convertTo12HourFormat, getLastSeen } = ConversationStore();
   const { activeUsers } = useAuthStore();
-  const [isActive, setIsActive] = useState(false);
+  const [isActive, setIsActive] = useState(null);
+  const [lastSeen, setLastSeen] = useState("");
   useEffect(() => {
-    if (activeUsers.includes(partner._id)) {
-      setIsActive(true);
-    } else {
-      setIsActive(false);
+    async function fetchActiveStatus() {
+      if (activeUsers.includes(partner._id)) {
+        setIsActive(true);
+      } else {
+        const response = await getLastSeen(partner._id);
+        setLastSeen(convertTo12HourFormat(response));
+        setIsActive(false);
+      }
     }
+    fetchActiveStatus();
   }, [activeUsers, partner._id]);
+
+  // useEffect(() => {
+  //   setIsActive(null);
+  // }, [partner]);
+
+  useEffect(() => {
+    console.log(isActive);
+  }, [isActive]);
+
   return (
     <div className="px-[1rem] h-[12%] border-b border-[#ffffff73] flex justify-between items-center">
       <div className="flex gap-[10px] items-center">
@@ -25,11 +40,9 @@ function TopSection() {
         <div className="">
           <p className="font-[500]">{partner.name}</p>
           <p className="mt-[-6px] text-[13px]">
-            {isActive ? (
-              <span>Active now</span>
-            ) : (
-              <span>Last seen 10:40 PM</span>
-            )}
+            {isActive === null && <span>&nbsp;</span>}
+            {isActive === true && <span>Active now</span>}
+            {isActive === false && <span>Last seen {lastSeen}</span>}
           </p>
         </div>
       </div>

@@ -3,10 +3,11 @@ import ChatLeft from "./ChatLeft";
 import ChatRight from "./ChatRight";
 import { ConversationStore } from "../../store/ConversationStore";
 import { useAuthStore } from "../../store/AuthStore.js";
+import { BeatLoader } from "react-spinners";
 
 function MiddleSection() {
   const [messageList, setMessagesList] = useState([]);
-  const { messages } = ConversationStore();
+  const { messages, isLoading } = ConversationStore();
   const { user } = useAuthStore();
   const conversationRef = useRef(null);
 
@@ -30,11 +31,17 @@ function MiddleSection() {
       ref={conversationRef}
       className="scrollNone p-[1rem] h-[80%] border-b border-[#ffffff73] overflow-y-auto "
     >
-      {messageList.map((msg, index) =>
-        msg.sender === user._id ? (
-          <ChatRight key={index} msg={msg} />
-        ) : (
-          <ChatLeft key={index} msg={msg} />
+      {isLoading ? (
+        <div className="w-full h-full flex items-center justify-center">
+          <BeatLoader color="#ffffff" size={7} />
+        </div>
+      ) : (
+        messageList.map((msg, index) =>
+          msg.sender === user._id ? (
+            <ChatRight key={index} msg={msg} />
+          ) : (
+            <ChatLeft key={index} msg={msg} />
+          )
         )
       )}
     </div>

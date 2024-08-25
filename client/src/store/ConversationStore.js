@@ -7,9 +7,10 @@ axios.defaults.withCredentials = true;
 
 export const ConversationStore = create((set) => ({
     partner: null,
+    isLoading:false,
     messages: [],
     setPartner: async (user) => {
-        set({ partner: user, messages: [] })
+        set({ partner: user, messages: [], isLoading:true })
         if (user) {
             try {
                 const response = await axios.get(`${BASE_URL}/receivemessage/${user._id}`)
@@ -19,6 +20,8 @@ export const ConversationStore = create((set) => ({
             } catch (error) {
                 console.log(error);
                 throw error;
+            }finally{
+                set({ isLoading:false })
             }
         } else {
             set({ messages: [] })
@@ -35,6 +38,17 @@ export const ConversationStore = create((set) => ({
             throw error;
         }
     },
+    getLastSeen:async(userid)=>{
+        try {
+            if(!userid)return
+            const response = await axios.get(`${BASE_URL}/getlastseen/${userid}`)
+            if(response.status===200){
+                return response.data.lastSeen
+            }
+        } catch (error) {
+            throw error;
+        }
+    },
     convertTo12HourFormat: (isoString) => {
         const date = new Date(isoString);
         let hours = date.getHours();
@@ -42,9 +56,7 @@ export const ConversationStore = create((set) => ({
         const ampm = hours >= 12 ? "PM" : "AM";
         hours = hours % 12;
         hours = hours ? hours : 12;
-        const formattedTime = `${hours
-            .toString()
-            .padStart(2, "0")}:${minutes} ${ampm}`;
+        const formattedTime = `${hours.toString().padStart(2, "0")}:${minutes} ${ampm}`;
         return formattedTime;
     }
 }))
