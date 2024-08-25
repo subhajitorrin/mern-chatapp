@@ -46,12 +46,11 @@ export const useAuthStore = create((set) => ({
         set({ isLoading: true })
         try {
             const response = await axios.post(`${BASE_URL}/logout`)
-            console.log(response);
 
             if (response.status === 200) {
                 toast("Logout successfull")
             }
-            set({ user: null, isAuthenticated: false })
+            set({ user: null, isAuthenticated: false, connections: [] })
         } catch (error) {
             console.log(error.message);
             throw error

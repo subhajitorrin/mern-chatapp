@@ -255,11 +255,23 @@ async function getConnections(req, res) {
     const user = req.id;
     try {
         const connections = await UserModel.findById(user)
-            .select("connections")
-            .populate({ path: "connections", select: "-password -connections" });
+            .select("Conversations")
+            .populate({
+                path: "Conversations",
+                select: "updatedAt participants",
+            });
+        let connectionList = []
+        for (const conv of connections.Conversations) {
+            const obj = {}
+            obj.updatedAt = conv.updatedAt
+            const otherUserId = conv.participants.find(element => element.toString() !== user)
+            const otherUserRes = await UserModel.findById(otherUserId).select("-password");
+            obj.user = otherUserRes
+            connectionList.push(obj)
+        }
         return res
             .status(200)
-            .json({ msg: "All connections fetched", success: true, connections: connections.connections });
+            .json({ msg: "All connections fetched", success: true, connections: connectionList });
     } catch (error) {
         console.error("Error while finding connections", error);
         return res

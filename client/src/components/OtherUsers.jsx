@@ -20,7 +20,7 @@ function OtherUsers() {
   return (
     <div className="scrollNone flex flex-col h-[80%] overflow-y-auto">
       {connectionList.map((item, index) => {
-        return <UserCard key={index} item={item} />;
+        return <UserCard key={index} user={item.user} lastMsg = {item.updatedAt} />;
       })}
     </div>
   );

@@ -2,13 +2,14 @@ import React, { useState } from "react";
 import { GoDotFill } from "react-icons/go";
 import { ConversationStore } from "../store/ConversationStore.js";
 
-function UserCard({ item }) {
+function UserCard({ user,lastMsg }) {
   const [isActive, setIsActive] = useState(false);
   const { setPartner } = ConversationStore();
+  const { convertTo12HourFormat } = ConversationStore();
 
   function handleSetPartner() {
-    if (item) {
-      setPartner(item);
+    if (user) {
+      setPartner(user);
     }
   }
 
@@ -23,13 +24,13 @@ function UserCard({ item }) {
             <GoDotFill className="text-[#00ff00] text-[18px] absolute right-[-3px] top-[-3px]" />
           )}
           <img
-            src={item.image}
+            src={user.image}
             className="h-[40px] object-cover w-[40px] rounded-[100%]"
           />
         </span>
-        <p>{item.name}</p>
+        <p>{user.name}</p>
       </div>
-      <div className="">03:40 PM</div>
+      <div className="">{convertTo12HourFormat(lastMsg)}</div>
     </div>
   );
 }

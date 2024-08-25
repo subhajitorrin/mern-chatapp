@@ -22,9 +22,9 @@ const userSchema = new mongoose.Schema({
         type: String,
         enum: ["male", "female"]
     },
-    connections: [{
+    Conversations: [{
         type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
+        ref: "Conversation",
         default: []
     }]
 }, {

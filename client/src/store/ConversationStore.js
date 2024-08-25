@@ -34,5 +34,17 @@ export const ConversationStore = create((set) => ({
             console.log(error);
             throw error;
         }
+    },
+    convertTo12HourFormat: (isoString) => {
+        const date = new Date(isoString);
+        let hours = date.getHours();
+        const minutes = date.getMinutes().toString().padStart(2, "0");
+        const ampm = hours >= 12 ? "PM" : "AM";
+        hours = hours % 12;
+        hours = hours ? hours : 12;
+        const formattedTime = `${hours
+            .toString()
+            .padStart(2, "0")}:${minutes} ${ampm}`;
+        return formattedTime;
     }
 }))
