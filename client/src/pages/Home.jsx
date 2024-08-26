@@ -39,7 +39,7 @@ function Home() {
     return (
       <div className="h-full text-white">
         {partner === null ? (
-          <div className="h-full w-full">
+          <div className="h-full w-full overflow-hidden">
             <ProfileCard />
             <Search />
             <OtherUsers />
