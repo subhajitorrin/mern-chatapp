@@ -9,6 +9,7 @@ export const ConversationStore = create((set) => ({
     partner: null,
     isLoading:false,
     messages: [],
+    tempMsg:null,
     setPartner: async (user) => {
         set({ partner: user, messages: [], isLoading:true })
         if (user) {
@@ -48,6 +49,9 @@ export const ConversationStore = create((set) => ({
         } catch (error) {
             throw error;
         }
+    },
+    setTempMessage:(msg)=>{
+        set({tempMsg:msg})
     },
     convertTo12HourFormat: (isoString) => {
         const date = new Date(isoString);

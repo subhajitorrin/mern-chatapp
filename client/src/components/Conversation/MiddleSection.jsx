@@ -7,13 +7,15 @@ import { BeatLoader } from "react-spinners";
 
 function MiddleSection() {
   const [messageList, setMessagesList] = useState([]);
-  const { messages, isLoading } = ConversationStore();
+  const { messages, isLoading, tempMsg } = ConversationStore();
   const { user, socket } = useAuthStore();
   const conversationRef = useRef(null);
 
   useEffect(() => {
-    console.log(messageList);
-  }, [messageList]);
+    if (tempMsg !== null) {
+      setMessagesList((prev) => [...prev, tempMsg]);
+    }
+  }, [tempMsg]);
 
   useEffect(() => {
     if (socket) {
