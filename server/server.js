@@ -21,7 +21,7 @@ app.use(
 app.use(express.json());
 app.use(cookieParser());
 
-app.length("/", (req, res) => {
+app.get("/", (req, res) => {
   res.send("Server is running...");
 });
 
