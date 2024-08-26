@@ -1,11 +1,17 @@
 import React, { useEffect, useState } from "react";
 import { IoVideocamOutline } from "react-icons/io5";
 import { IoCallOutline } from "react-icons/io5";
-import { ConversationStore } from "../../store/ConversationStore.js";
+import { IoIosArrowBack } from "react-icons/io";
+import {
+  ConversationStore,
+  useResponsive
+} from "../../store/ConversationStore.js";
 import { useAuthStore } from "../../store/AuthStore.js";
 
 function TopSection() {
-  const { partner, convertTo12HourFormat, getLastSeen } = ConversationStore();
+  const { partner, convertTo12HourFormat, getLastSeen, setPartnerNull } =
+    ConversationStore();
+  const { isMobile } = useResponsive();
   const { activeUsers } = useAuthStore();
   const [isActive, setIsActive] = useState(null);
   const [lastSeen, setLastSeen] = useState("");
@@ -22,9 +28,21 @@ function TopSection() {
     fetchActiveStatus();
   }, [activeUsers, partner._id]);
 
+  function handleBack() {
+    if (setPartnerNull) {
+      setPartnerNull();
+    }
+  }
+
   return (
-    <div className="px-[1rem] h-[12%] border-b border-[#ffffff73] flex justify-between items-center">
+    <div className="px-[1rem] py-[10px] border-b border-[#ffffff73] flex justify-between items-center">
       <div className="flex gap-[10px] items-center">
+        {isMobile && (
+          <IoIosArrowBack
+            onClick={handleBack}
+            className="text-[20px] cursor-pointer relative top-[-2px]"
+          />
+        )}
         <img
           src={partner.image}
           className="object-cover h-[45px] w-[45px] rounded-[100%] border border-[#ffffff73]"

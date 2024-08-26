@@ -24,7 +24,7 @@ function LowerSection() {
     }
   }
   return (
-    <div className="h-[8%] flex w-full items-center px-[1rem] justify-between">
+    <div className="py-[15px]  flex w-full items-center px-[1rem] justify-between">
       <div className="flex gap-[20px]">
         <MdOutlineEmojiEmotions className="text-[22px] cursor-pointer " />
         <GrAttachment className="text-[22px] cursor-pointer " />

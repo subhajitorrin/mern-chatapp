@@ -25,7 +25,7 @@ function Conversation() {
     );
   }
   return (
-    <div className="h-full w-full">
+    <div className="flex flex-col h-full w-full">
       <TopSection />
       <MiddleSection />
       <LowerSection />

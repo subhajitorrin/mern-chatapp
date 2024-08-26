@@ -53,6 +53,9 @@ export const ConversationStore = create((set) => ({
     setTempMessage:(msg)=>{
         set({tempMsg:msg})
     },
+    setPartnerNull:()=>{
+        set({partner:null,messages:[],tempMsg:null})
+    },
     convertTo12HourFormat: (isoString) => {
         const date = new Date(isoString);
         let hours = date.getHours();
@@ -62,5 +65,12 @@ export const ConversationStore = create((set) => ({
         hours = hours ? hours : 12;
         const formattedTime = `${hours.toString().padStart(2, "0")}:${minutes} ${ampm}`;
         return formattedTime;
+    }
+}))
+
+export const useResponsive=create((set)=>({
+    isMobile:window.innerWidth>768?false:true,
+    setIsMobile:(status)=>{
+        set({isMobile:status})
     }
 }))

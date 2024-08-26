@@ -8,6 +8,7 @@ import ToastifyContainer from "./components/ToastifyContainer";
 import { Navigate } from "react-router-dom";
 import { useAuthStore } from "./store/AuthStore";
 import { useMediaQuery } from "react-responsive";
+import { useResponsive } from "./store/ConversationStore.js";
 
 function ProtectedRoute({ children }) {
   const { isAuthenticated } = useAuthStore();
@@ -29,10 +30,15 @@ function App() {
     query: "(max-width: 768px)"
   });
   const { isCheckingAuth, getUser } = useAuthStore();
+  const { setIsMobile } = useResponsive();
 
   useEffect(() => {
     getUser();
   }, [getUser]);
+
+  useEffect(() => {
+    setIsMobile(isMobile);
+  }, [isMobile, setIsMobile]);
 
   if (isCheckingAuth) return <></>;
 
