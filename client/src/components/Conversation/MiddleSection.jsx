@@ -8,8 +8,20 @@ import { BeatLoader } from "react-spinners";
 function MiddleSection() {
   const [messageList, setMessagesList] = useState([]);
   const { messages, isLoading } = ConversationStore();
-  const { user } = useAuthStore();
+  const { user, socket } = useAuthStore();
   const conversationRef = useRef(null);
+
+  useEffect(() => {
+    console.log(messageList);
+  }, [messageList]);
+
+  useEffect(() => {
+    if (socket) {
+      socket.on("receiveSocketMsg", (data) => {
+        setMessagesList((prev) => [...prev, data]);
+      });
+    }
+  }, [socket]);
 
   useEffect(() => {
     if (conversationRef.current) {
@@ -18,7 +30,7 @@ function MiddleSection() {
         behavior: "smooth"
       });
     }
-  }, [conversationRef.current]);
+  }, [conversationRef.current, messageList]);
 
   useEffect(() => {
     if (messages) {

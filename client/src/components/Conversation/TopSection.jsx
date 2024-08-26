@@ -22,14 +22,6 @@ function TopSection() {
     fetchActiveStatus();
   }, [activeUsers, partner._id]);
 
-  // useEffect(() => {
-  //   setIsActive(null);
-  // }, [partner]);
-
-  useEffect(() => {
-    console.log(isActive);
-  }, [isActive]);
-
   return (
     <div className="px-[1rem] h-[12%] border-b border-[#ffffff73] flex justify-between items-center">
       <div className="flex gap-[10px] items-center">

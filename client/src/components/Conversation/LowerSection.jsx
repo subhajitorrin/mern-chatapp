@@ -3,14 +3,17 @@ import { MdOutlineEmojiEmotions } from "react-icons/md";
 import { GrAttachment } from "react-icons/gr";
 import { BsSend } from "react-icons/bs";
 import { ConversationStore } from "../../store/ConversationStore";
+import { useAuthStore } from "../../store/AuthStore.js";
 
 function LowerSection() {
+  const { socket } = useAuthStore();
   const [text, settext] = useState("");
   const { sendMessage, partner } = ConversationStore();
   async function handleSendMessage() {
     if (text === "" && partner !== null) {
       return;
     }
+    socket.emit("message", { receiverId: partner._id, msg: text });
     try {
       await sendMessage(text, partner._id);
       settext("");

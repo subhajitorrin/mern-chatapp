@@ -26,14 +26,31 @@ async function updateLastSeen(userId) {
 }
 
 io.on("connection", socket => {
-  // console.log("A new user connected", socket.id);
+  /*{get socket id from frontend}*/
   const userId = socket.handshake.query.userId;
+
+  /*{store socket id on map}*/
   if (userId) activeUsersMap[userId] = socket.id;
+
+  /*{send online users}*/
   io.emit("GET_ONLINE_USERS", Object.keys(activeUsersMap));
+
+  /*{send msg to the receiver socket}*/
+  socket.on("message", data => {
+    const receiverSocketId = activeUsersMap[data.receiverId];
+    if (!receiverSocketId) return;
+    io
+      .to(receiverSocketId)
+      .emit("receiveSocketMsg", { message: data.msg, createdAt: new Date() });
+  });
+
+  /*{when socket disconnect}*/
   socket.on("disconnect", async () => {
-    // console.log("User disconnected", socket.id);
+    /*{delete the user from map}*/
     delete activeUsersMap[userId];
+    /*{update the last seen of the disconnected user}*/
     await updateLastSeen(userId);
+    /*{pass updated online users map}*/
     io.emit("GET_ONLINE_USERS", Object.keys(activeUsersMap));
   });
 });
