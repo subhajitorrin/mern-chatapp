@@ -23,6 +23,11 @@ function LowerSection() {
       console.log(error);
     }
   }
+
+  function handleOnchange(e) {
+    settext(e.target.value);
+    socket.emit("typing", { receiverId: partner._id, isTyping: true });
+  }
   return (
     <div className="py-[15px]  flex w-full items-center px-[1rem] justify-between">
       <div className="flex gap-[20px]">
@@ -36,9 +41,7 @@ function LowerSection() {
           }
         }}
         value={text}
-        onChange={(e) => {
-          settext(e.target.value);
-        }}
+        onChange={handleOnchange}
         placeholder="Type your text here..."
         type="text"
         className="bg-transparent w-[88%] px-[20px] outline-none"

@@ -44,6 +44,13 @@ io.on("connection", socket => {
       .emit("receiveSocketMsg", { message: data.msg, createdAt: new Date() });
   });
 
+  /*{typing status}*/
+  socket.on("typing", data => {
+    const receiverSocketId = activeUsersMap[data.receiverId];
+    if (!receiverSocketId) return;
+    io.to(receiverSocketId).emit("receiveTyping", true);
+  });
+
   /*{when socket disconnect}*/
   socket.on("disconnect", async () => {
     /*{delete the user from map}*/

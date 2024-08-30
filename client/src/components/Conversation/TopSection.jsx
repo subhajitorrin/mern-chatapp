@@ -11,10 +11,12 @@ import { useAuthStore } from "../../store/AuthStore.js";
 function TopSection() {
   const { partner, convertTo12HourFormat, getLastSeen, setPartnerNull } =
     ConversationStore();
+  const { socket } = useAuthStore();
   const { isMobile } = useResponsive();
   const { activeUsers } = useAuthStore();
   const [isActive, setIsActive] = useState(null);
   const [lastSeen, setLastSeen] = useState("");
+  const [isTyping, setIsTyping] = useState(false);
   useEffect(() => {
     async function fetchActiveStatus() {
       if (activeUsers.includes(partner._id)) {
@@ -34,6 +36,22 @@ function TopSection() {
     }
   }
 
+  useEffect(() => {
+    let typingTimeout;
+    function handleTyping(data) {
+      setIsTyping(data);
+      if (typingTimeout) {
+        clearInterval(typingTimeout);
+      }
+      typingTimeout = setTimeout(() => {
+        setIsTyping(false);
+      }, 500);
+    }
+    if (socket !== null) {
+      socket.on("receiveTyping", handleTyping);
+    }
+  }, [socket]);
+
   return (
     <div className="px-[1rem] py-[10px] border-b border-[#ffffff73] flex justify-between items-center">
       <div className="flex gap-[10px] items-center">
@@ -51,7 +69,7 @@ function TopSection() {
           <p className="font-[500]">{partner.name}</p>
           <p className="mt-[-6px] text-[13px]">
             {isActive === null && <span>&nbsp;</span>}
-            {isActive === true && <span>Active now</span>}
+            {isActive && <span>{isTyping ? "typing..." : "Active now"}</span>}
             {isActive === false && <span>Last seen {lastSeen}</span>}
           </p>
         </div>
