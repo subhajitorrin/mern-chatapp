@@ -42,6 +42,7 @@ async function sendMessage(req, res) {
     await newMessage.save();
 
     conversation.messages.push(newMessage._id);
+    conversation.lastMessage = newMessage._id;
     await conversation.save();
 
     return res

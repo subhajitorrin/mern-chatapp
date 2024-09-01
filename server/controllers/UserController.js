@@ -7,6 +7,7 @@ import {
 } from "../utils/cloudinary.js";
 import dotenv from "dotenv";
 import ConversationModel from "../models/ConversationModel.js";
+import MessageModel from "../models/MessageModel.js";
 
 dotenv.config();
 
@@ -108,7 +109,7 @@ async function loginUser(req, res) {
       httpOnly: true,
       maxAge: 7 * 24 * 60 * 60 * 1000,
       secure: true,
-      sameSite: 'None',
+      sameSite: "None"
     });
     const userObj = {
       name: existingUser.name,
@@ -257,7 +258,7 @@ async function getConnections(req, res) {
       .select("Conversations")
       .populate({
         path: "Conversations",
-        select: "updatedAt participants"
+        select: "updatedAt participants lastMessage"
       });
     let connectionList = [];
     for (const conv of connections.Conversations) {
@@ -270,6 +271,13 @@ async function getConnections(req, res) {
         "-password"
       );
       obj.user = otherUserRes;
+
+      if (conv.lastMessage) {
+        const lmsg = await MessageModel.findById(conv.lastMessage);
+        if (lmsg) {
+          obj.lastMessage = lmsg;
+        }
+      }
       connectionList.push(obj);
     }
     return res.status(200).json({
