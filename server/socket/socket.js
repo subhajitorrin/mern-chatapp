@@ -39,16 +39,20 @@ io.on("connection", socket => {
   socket.on("message", data => {
     const receiverSocketId = activeUsersMap[data.receiverId];
     if (!receiverSocketId) return;
-    io
-      .to(receiverSocketId)
-      .emit("receiveSocketMsg", { message: data.msg, createdAt: new Date() });
+    io.to(receiverSocketId).emit("receiveSocketMsg", {
+      message: data.msg,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      receiver: data.receiverId,
+      sender: data.senderId
+    });
   });
 
   /*{typing status}*/
   socket.on("typing", data => {
     const receiverSocketId = activeUsersMap[data.receiverId];
     if (!receiverSocketId) return;
-    io.to(receiverSocketId).emit("receiveTyping", true);
+    io.to(receiverSocketId).emit("receiveTyping", data);
   });
 
   /*{when socket disconnect}*/

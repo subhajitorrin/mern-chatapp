@@ -285,8 +285,6 @@ async function getConnections(req, res) {
         new Date(b.lastMessage.updatedAt) - new Date(a.lastMessage.updatedAt)
     );
 
-    console.log(connectionList);
-
     return res.status(200).json({
       msg: "All connections fetched",
       success: true,
