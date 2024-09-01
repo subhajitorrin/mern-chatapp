@@ -263,7 +263,6 @@ async function getConnections(req, res) {
     let connectionList = [];
     for (const conv of connections.Conversations) {
       const obj = {};
-      obj.updatedAt = conv.updatedAt;
       const otherUserId = conv.participants.find(
         element => element.toString() !== user
       );
@@ -280,6 +279,14 @@ async function getConnections(req, res) {
       }
       connectionList.push(obj);
     }
+
+    connectionList.sort(
+      (a, b) =>
+        new Date(b.lastMessage.updatedAt) - new Date(a.lastMessage.updatedAt)
+    );
+
+    console.log(connectionList);
+
     return res.status(200).json({
       msg: "All connections fetched",
       success: true,
