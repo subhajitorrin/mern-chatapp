@@ -317,6 +317,23 @@ async function getLastSeen(req, res) {
   }
 }
 
+async function getUserById(req, res) {
+  const { id } = req.params;
+  try {
+    const user = await UserModel.findById(id);
+    if (!user)
+      return res.status(404).json({ msg: "User not found", success: false });
+    return res
+      .status(200)
+      .json({ msg: "User found successfull", success: true, user });
+  } catch (error) {
+    console.error("Error while finding user by id", error);
+    return res
+      .status(500)
+      .json({ msg: "Error while finding user by id", error, success: false });
+  }
+}
+
 export {
   registerUser,
   loginUser,
@@ -325,5 +342,6 @@ export {
   logoutUser,
   getUser,
   getConnections,
-  getLastSeen
+  getLastSeen,
+  getUserById
 };

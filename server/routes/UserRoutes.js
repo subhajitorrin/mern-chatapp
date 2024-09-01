@@ -7,7 +7,8 @@ import {
   logoutUser,
   getUser,
   getConnections,
-  getLastSeen
+  getLastSeen,
+  getUserById
 } from "../controllers/UserController.js";
 import uploadStorage from "../middleware/multer.js";
 import authToken from "../middleware/authToken.js";
@@ -23,6 +24,7 @@ UserRoutes.put(
   updateUser
 );
 UserRoutes.get("/getuser", authToken, getUser);
+UserRoutes.get("/getuserbyid/:id", authToken, getUserById);
 UserRoutes.get("/getconnections", authToken, getConnections);
 UserRoutes.get("/getlastseen/:userid", authToken, getLastSeen);
 
