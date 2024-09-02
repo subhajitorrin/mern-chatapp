@@ -44,7 +44,8 @@ io.on("connection", socket => {
       createdAt: new Date(),
       updatedAt: new Date(),
       receiver: data.receiverId,
-      sender: data.senderId
+      sender: data.senderId,
+      user: data.user
     });
   });
 
