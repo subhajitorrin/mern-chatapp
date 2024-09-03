@@ -362,9 +362,16 @@ async function deleteConversation(req, res) {
     await userRes.save();
     return res
       .status(200)
-      .json({ msg: "Conversationn deleted", success: true });
+      .json({
+        msg: "Conversationn deleted",
+        success: true,
+        conversationId: conversationRes._id
+      });
   } catch (error) {
-    return res.status(500).json({ msg: "User not deleted!", success: false });
+    return res.status(500).json({
+      msg: "User not deleted!",
+      success: false
+    });
   }
 }
 
