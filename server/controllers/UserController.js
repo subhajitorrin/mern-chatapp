@@ -334,6 +334,40 @@ async function getUserById(req, res) {
   }
 }
 
+async function deleteConversation(req, res) {
+  const user = req.id;
+  const { partner } = req.params;
+  try {
+    const userRes = await UserModel.findById(user);
+    if (!userRes) {
+      return res.status(400).json({ msg: "User not found!", success: false });
+    }
+    const partnerRes = await UserModel.findById(partner);
+    if (!partnerRes) {
+      return res
+        .status(400)
+        .json({ msg: "Partner not found!", success: false });
+    }
+    const conversationRes = await ConversationModel.findOne({
+      participants: { $all: [user, partner] }
+    }).select("participants lastMessage");
+    if (!conversationRes) {
+      return res
+        .status(400)
+        .json({ msg: "Conversation not found!", success: false });
+    }
+    userRes.Conversations = userRes.Conversations.filter(
+      item => item.toString() !== conversationRes._id.toString()
+    );
+    await userRes.save();
+    return res
+      .status(200)
+      .json({ msg: "Conversationn deleted", success: true });
+  } catch (error) {
+    return res.status(500).json({ msg: "User not deleted!", success: false });
+  }
+}
+
 export {
   registerUser,
   loginUser,
@@ -343,5 +377,6 @@ export {
   getUser,
   getConnections,
   getLastSeen,
-  getUserById
+  getUserById,
+  deleteConversation
 };
