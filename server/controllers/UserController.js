@@ -360,13 +360,18 @@ async function deleteConversation(req, res) {
       item => item.toString() !== conversationRes._id.toString()
     );
     await userRes.save();
-    return res
-      .status(200)
-      .json({
-        msg: "Conversationn deleted",
-        success: true,
-        conversationId: conversationRes._id
-      });
+    partnerRes.Conversations = partnerRes.Conversations.filter(
+      item => item.toString() !== conversationRes._id.toString()
+    );
+    await partnerRes.save();
+
+    await ConversationModel.findByIdAndDelete(conversationRes._id);
+
+    return res.status(200).json({
+      msg: "Conversationn deleted",
+      success: true,
+      conversationId: conversationRes._id
+    });
   } catch (error) {
     return res.status(500).json({
       msg: "User not deleted!",

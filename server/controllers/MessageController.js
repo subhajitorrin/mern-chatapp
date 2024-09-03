@@ -32,15 +32,6 @@ async function sendMessage(req, res) {
       await UserModel.findByIdAndUpdate(receiverid, {
         $push: { Conversations: connection_res }
       });
-    } else {
-      const sender = await UserModel.findById(senderid);
-      let flag = sender.Conversations.find(
-        item => item.toString() === conversation._id
-      );
-      if (!flag) {
-        sender.Conversations.push(conversation._id);
-        await sender.save();
-      }
     }
 
     const newMessage = new MessageModel({
@@ -78,6 +69,7 @@ async function receiveMessage(req, res) {
     let conversation = await ConversationModel.findOne({
       participants: { $all: [senderid, receiverid] }
     }).populate("messages");
+
     return res
       .status(200)
       .json({ messages: conversation ? conversation : [], success: true });
