@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import UserCard from "./UserCard";
 import { useAuthStore } from "../store/AuthStore.js";
+import { ConversationStore } from "../store/ConversationStore.js";
 
 function OtherUsers() {
   const [connectionList, setConnectionList] = useState([]);
@@ -11,6 +12,7 @@ function OtherUsers() {
     socket,
     checkAndUpdateConnection
   } = useAuthStore();
+  const { tempMsg } = ConversationStore();
   const [pendingMsg, setPendingMsg] = useState(null);
 
   useEffect(() => {
@@ -54,6 +56,20 @@ function OtherUsers() {
       setConnectionList([userToUpdate, ...updatedList]);
     }
   }, [pendingMsg]);
+
+  useEffect(() => {
+    if (tempMsg !== null) {
+      const userToUpdate = connectionList.find(
+        (item) => item.user._id === tempMsg.receiver
+      );
+      if (!userToUpdate || !userToUpdate.lastMessage) return;
+      userToUpdate.lastMessage = tempMsg;
+      const updatedList = connectionList.filter(
+        (item) => item.user._id !== tempMsg.receiver
+      );
+      setConnectionList([userToUpdate, ...updatedList]);
+    }
+  }, [tempMsg]);
 
   return (
     <div className="scrollNone flex flex-col h-[80%] overflow-y-auto">
