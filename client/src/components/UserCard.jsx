@@ -13,6 +13,7 @@ function UserCard({ othuser, lastMsg }) {
   function handleSetPartner() {
     if (othuser) {
       setPartner(othuser);
+      sessionStorage.setItem("partner", JSON.stringify(othuser));
     }
   }
 

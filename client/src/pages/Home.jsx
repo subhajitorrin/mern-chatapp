@@ -13,7 +13,14 @@ import {
 function Home() {
   const { user, setSocket, setActiveUsers } = useAuthStore();
   const { isMobile } = useResponsive();
-  const { partner } = ConversationStore();
+  const { partner, setPartner } = ConversationStore();
+
+  useEffect(() => {
+    const prevPartner = JSON.parse(sessionStorage.getItem("partner"));
+    if (prevPartner) {
+      setPartner(prevPartner);
+    }
+  }, []);
 
   useEffect(() => {
     if (user) {
