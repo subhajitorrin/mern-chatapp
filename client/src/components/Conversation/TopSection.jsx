@@ -39,8 +39,6 @@ function TopSection() {
   useEffect(() => {
     let typingTimeout;
     function handleTyping(data) {
-      console.log(data);
-      
       if (partner._id !== data.senderId) return;
       setIsTyping(true);
       if (typingTimeout) {
