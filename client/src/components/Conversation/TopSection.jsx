@@ -39,7 +39,10 @@ function TopSection() {
   useEffect(() => {
     let typingTimeout;
     function handleTyping(data) {
-      setIsTyping(data);
+      console.log(data);
+      
+      if (partner._id !== data.senderId) return;
+      setIsTyping(true);
       if (typingTimeout) {
         clearInterval(typingTimeout);
       }
@@ -50,7 +53,13 @@ function TopSection() {
     if (socket !== null) {
       socket.on("receiveTyping", handleTyping);
     }
-  }, [socket]);
+
+    return () => {
+      if (socket !== null) {
+        socket.off("receiveTyping", handleTyping);
+      }
+    };
+  }, [socket, partner]);
 
   return (
     <div className="px-[1rem] py-[10px] border-b border-[#ffffff73] flex justify-between items-center">

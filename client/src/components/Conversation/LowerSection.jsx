@@ -40,8 +40,13 @@ function LowerSection() {
 
   function handleOnchange(e) {
     settext(e.target.value);
-    socket.emit("typing", { receiverId: partner._id, isTyping: true });
+    socket.emit("typing", {
+      receiverId: partner._id,
+      isTyping: true,
+      senderId: user._id
+    });
   }
+  
   return (
     <div className="py-[15px]  flex w-full items-center px-[1rem] justify-between">
       <div className="flex gap-[20px]">
