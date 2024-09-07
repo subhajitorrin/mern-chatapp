@@ -6,7 +6,7 @@ const BASE_URL = import.meta.env.VITE_BACKEND_BASE_URL;
 
 axios.defaults.withCredentials = true;
 
-export const useAuthStore = create((set) => ({
+export const useAuthStore = create((set,get) => ({
     socket: null,
     user: null,
     isAuthenticated: false,
@@ -125,5 +125,14 @@ export const useAuthStore = create((set) => ({
     },
     setActiveUsers: (users) => {
         set({ activeUsers: users });
-    }
+    },
+    checkAndUpdateConnection: async (msg, user, isSender) => {
+        const currentConnections = get().connections;
+        const isAvailable = currentConnections.find(
+          (item) => item.user._id === (isSender ? msg.sender : msg.receiver),
+        );
+        if (!isAvailable) {
+          set({ connections: [{ user, lastMessage: msg }, ...currentConnections] });
+        }
+      },
 }));

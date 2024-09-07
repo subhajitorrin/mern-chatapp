@@ -6,15 +6,29 @@ import { ConversationStore } from "../../store/ConversationStore";
 import { useAuthStore } from "../../store/AuthStore.js";
 
 function LowerSection() {
-  const { socket, user } = useAuthStore();
+  const { socket, user, checkAndUpdateConnection } = useAuthStore();
   const [text, settext] = useState("");
   const { sendMessage, partner, setTempMessage } = ConversationStore();
   async function handleSendMessage() {
     if (text === "" && partner !== null) {
       return;
     }
-    socket.emit("message", { receiverId: partner._id, msg: text });
-    setTempMessage({ message: text, sender: user._id, createdAt: new Date() });
+    let msgObj = {
+      receiver: partner._id,
+      message: text,
+      sender: user._id,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    };
+    checkAndUpdateConnection(msgObj, partner, false);
+    socket.emit("message", {
+      senderId: user._id,
+      receiverId: partner._id,
+      msg: text,
+      createdAt: new Date(),
+      user
+    });
+    setTempMessage(msgObj);
     try {
       const temp = text;
       settext("");
