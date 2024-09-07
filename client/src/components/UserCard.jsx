@@ -27,8 +27,6 @@ function UserCard({ othuser, lastMsg }) {
   useEffect(() => {
     let typingTimeout;
     function handleTyping(data) {
-      console.log(data);
-
       if (othuser._id !== data.senderId) return;
       setIsTyping(true);
       if (typingTimeout) {
