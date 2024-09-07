@@ -4,10 +4,11 @@ import { ConversationStore } from "../store/ConversationStore.js";
 import { useAuthStore } from "../store/AuthStore.js";
 
 function UserCard({ othuser, lastMsg }) {
-  const { activeUsers, user } = useAuthStore();
+  const { activeUsers, user, socket } = useAuthStore();
   const [isActive, setIsActive] = useState(false);
   const { setPartner } = ConversationStore();
   const { convertTo12HourFormat } = ConversationStore();
+  const [isTyping, setIsTyping] = useState(false);
 
   function handleSetPartner() {
     if (othuser) {
@@ -22,6 +23,31 @@ function UserCard({ othuser, lastMsg }) {
       setIsActive(false);
     }
   }, [activeUsers, othuser._id]);
+
+  useEffect(() => {
+    let typingTimeout;
+    function handleTyping(data) {
+      console.log(data);
+
+      if (othuser._id !== data.senderId) return;
+      setIsTyping(true);
+      if (typingTimeout) {
+        clearInterval(typingTimeout);
+      }
+      typingTimeout = setTimeout(() => {
+        setIsTyping(false);
+      }, 500);
+    }
+    if (socket !== null) {
+      socket.on("receiveTyping", handleTyping);
+    }
+
+    return () => {
+      if (socket !== null) {
+        socket.off("receiveTyping", handleTyping);
+      }
+    };
+  }, [socket, othuser]);
 
   return (
     <div
@@ -41,7 +67,7 @@ function UserCard({ othuser, lastMsg }) {
         <div className="">
           <p className="text-[#ffffffdc]">{othuser.name}</p>
           <p className="text-[#ffffff84] text-[12px] top-[-4px] relative">
-            {lastMsg.message}
+            {isTyping ? "typing..." : lastMsg.message}
           </p>
         </div>
       </div>
