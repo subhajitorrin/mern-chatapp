@@ -31,7 +31,7 @@ function OtherUsers() {
     if (!socket) return;
     async function handleReceiveSocketMsg(data) {
       checkAndUpdateConnection(data, data.user, true);
-      // setPendingMsg(data);
+      setPendingMsg(data);
     }
 
     socket.on("receiveSocketMsg", handleReceiveSocketMsg);
