@@ -14,7 +14,7 @@ const MONGO_URI = process.env.MONGO_URI;
 
 app.use(
   cors({
-    origin: [process.env.CLIENT_URL1, process.env.CLIENT_URL2],
+    origin: process.env.CLIENT_URL,
     credentials: true
   })
 );
