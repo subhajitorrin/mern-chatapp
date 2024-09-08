@@ -22,7 +22,7 @@ app.use(express.json());
 app.use(cookieParser());
 
 app.get("/", (req, res) => {
-  res.send("Server is running...");
+  res.send("Testing...");
 });
 
 app.use("/", UserRoutes);
